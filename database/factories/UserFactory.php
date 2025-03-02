@@ -15,6 +15,7 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    //データを作成
     public function definition()
     {
         return [
@@ -31,6 +32,7 @@ class UserFactory extends Factory
      *
      * @return static
      */
+    //状態定義(未検証ユーザ)
     public function unverified()
     {
         return $this->state(fn (array $attributes) => [

@@ -17,6 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // $fillableはデータを保存したりできるから保存したいカラムを書いていく
     protected $fillable = [
         'name',
         'email',
@@ -28,6 +29,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    //JSONレスポンスやシリアライズされた形式で非公開にするresponseに含まれない
     protected $hidden = [
         'password',
         'remember_token',
@@ -38,6 +40,7 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
+    //'属性名' => 'データ型'(変換する)
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
