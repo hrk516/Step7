@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"name": "STEP7",
+		"path": "."
+	},
+	{
+		"name": "SimpleNote",
+		"path": "../SimpleNote"
+	}
+],
+  "settings": {}
+}

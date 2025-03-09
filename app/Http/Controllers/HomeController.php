@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\Sales;
 use App\Http\Requests\ItemRequest;
+use Illuminate\Database\QueryException;
 
 
 class HomeController extends Controller
@@ -60,15 +61,21 @@ class HomeController extends Controller
         'comment' => $item_list['comment'],
         'img_path' => $img_path
         ];
-        $product_id = Product::createProduct($data);
-        Sales::createSales($product_id -> id);
-        return redirect() -> route('regist');
+        try {
+            $product_id = Product::createProduct($data);
+            Sales::createSales($product_id -> id);
+            return redirect() -> route('regist');
+        } catch (QueryException $e) {
+            return redirect() -> route('regist') -> with(['error' => 'データベースエラー'], 500);
+        } catch (\Exception $e) {
+            return redirect() -> route('regist') -> with(['error' => 'データベースエラー'], 500);
+        }
     }
 
     // 詳細画面
     public function detail(Request $request) {
         // クリックした商品情報を取得しVに渡す
-        $id = $request->input('id'); 
+        $id = $request -> input('id'); 
         $detail = Product::getProduct($id);
         return view('item_detail',compact('detail'));
     }
@@ -98,15 +105,27 @@ class HomeController extends Controller
         'comment' => $update_list['comment'],
         'img_path' => $img_path
         ];
-        Product::updateProduct($id, $update_data);
-        return redirect() -> route('edit', [$id]);
+        try {
+            Product::updateProduct($id, $update_data);
+            return redirect() -> route('edit', [$id]);
+        } catch (QueryException $e) {
+            return redirect() -> route('edit', [$id]) -> with(['error' => 'データベースエラー'], 500);
+        } catch (\Exception $e) {
+            return redirect() -> route('edit', [$id]) -> with(['error' => '処理に失敗しました'], 500);
+        }
     }
 
     //削除処理
     public function delete_item(Request $request) {
         $id = $request -> input('id'); 
-        Product::deleteProduct($id);
-        return redirect()->route('home');
+        try {
+            Product::deleteProduct($id);
+            return redirect() -> route('home');
+        } catch (QueryException $e) {
+            return redirect() -> route('home') -> with(['error' => 'データベースエラー'], 500);
+        } catch (\Exception $e) {
+            return redirect() -> route('home') -> with(['error' => '処理に失敗しました'], 500);
+        }
     }
 
     //検索処理
