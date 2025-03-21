@@ -130,9 +130,13 @@ class HomeController extends Controller
 
     //検索処理
     public function search(Request $request) {
-        $keyword = $request -> all();
+        $keyword = $request -> input('keyword');
         $products = Product::searchProduct($keyword);
         $companies = Company::getAllCompanies();
+        // Ajaxの場合はJSONで返す
+        if ($request->ajax()) {
+            return response()->json(['products' => $products]);
+        }
         return view('item_list',compact('products','companies'));
     }
 }

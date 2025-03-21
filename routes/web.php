@@ -26,6 +26,7 @@ Route::match(['GET', 'POST'],'/detail', [App\Http\Controllers\HomeController::cl
 Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'edit'])->name('edit');
 Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'update_item'])->name('update');
 Route::post('/delete', [App\Http\Controllers\HomeController::class, 'delete_item'])->name('delete');
-Route::post('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
+// Route::post('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
+// Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 Route::match(['GET', 'POST'],'/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 
