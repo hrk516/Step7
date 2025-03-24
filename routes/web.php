@@ -22,7 +22,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/item_regist', [App\Http\Controllers\HomeController::class, 'item_regist'])->name('regist');
 Route::post('/insert', [App\Http\Controllers\HomeController::class, 'insert_item'])->name('insert');
-Route::match(['GET', 'POST'],'/detail', [App\Http\Controllers\HomeController::class, 'detail'])->name('detail');
+Route::match(['GET', 'POST'],'/detail/{id}', [App\Http\Controllers\HomeController::class, 'detail'])->name('detail');
 Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'edit'])->name('edit');
 Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'update_item'])->name('update');
 Route::post('/delete', [App\Http\Controllers\HomeController::class, 'delete_item'])->name('delete');

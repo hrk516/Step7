@@ -64,13 +64,15 @@ class Product extends Model
     }
 
     // 検索処理 
-    public static function searchProduct($keyword) {
-        if ($keyword && isset($keyword['keyword']) && isset($keyword['company_id'])) {
-            $searched_data = self::where('product_name','like',"%{$keyword['keyword']}%")
-            ->where('company_id', $keyword['company_id'])
-            ->paginate(5);
-            return $searched_data;
+    public static function searchProduct($searchData) {
+        // これからSQL書くよのサイン的な
+        $query = self::query();
+        if (!empty($searchData['keyword'])) {
+        $query->where('product_name', 'like', "%{$searchData['keyword']}%");
         }
-        return self::orderBy('id', 'ASC')->paginate(5);
+        if (!empty($searchData['company_id'])) {
+            $query->where('company_id', $searchData['company_id']);
+        }
+        return $query->orderBy('id', 'ASC')->paginate(5);
     }
 }

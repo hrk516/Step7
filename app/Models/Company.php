@@ -37,4 +37,12 @@ class Company extends Model
         // productに渡すcompany_idを返す
         return $company_id['id'];
     }
+
+    // 検索処理 
+    public static function searchCompany($searchData) {
+        if (isset($searchData['company_id'])) {
+            return self::where('id', $searchData['company_id'])->first();
+        }
+        return null;
+    }
 }

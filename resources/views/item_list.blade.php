@@ -9,6 +9,13 @@
         <form method='POST' action="{{ route('search') }}" class="d-flex align-items-center gap-2">
             @csrf
             <textarea class="form-control col-6" name="keyword" placeholder="検索キーワード"></textarea>
+            <label for="price" class="col-sm-2 col-form-label">価格</label>
+            <input type="number" name="low_price" value="">〜
+            <input type="number" name="high_price" value="">
+            <label for="price" class="col-sm-2 col-form-label">在庫</label>
+            <input type="number" name="low_stock" value="">〜
+            <input type="number" name="low_stock" value="">
+            
             <select class="form-select col-4" name="company_id" aria-label="企業選択">
                 <option value="" selected>選択してください</option>
                 @foreach($companies as $company)
@@ -46,7 +53,7 @@
                         <td class="align-middle">{{ $product->stock }}</td>
                         <td class="align-middle">{{ $product->company->company_name }}</td>
                         <td class="align-middle d-flex align-items-center gap-2 form-btn">
-                            <form method='POST' action="{{ route('detail') }}">
+                            <form method='POST' action={{ route('detail', ['id' => $product->id]) }}>
                                 @csrf
                                 <input type='hidden' name='id' value="{{ $product->id }}">
                                 <button type="submit" class="btn btn-info">詳細</button>

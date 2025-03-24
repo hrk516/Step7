@@ -73,9 +73,8 @@ class HomeController extends Controller
     }
 
     // 詳細画面
-    public function detail(Request $request) {
+    public function detail($id) {
         // クリックした商品情報を取得しVに渡す
-        $id = $request -> input('id'); 
         $detail = Product::getProduct($id);
         return view('item_detail',compact('detail'));
     }
@@ -130,13 +129,17 @@ class HomeController extends Controller
 
     //検索処理
     public function search(Request $request) {
-        $keyword = $request -> input('keyword');
-        $products = Product::searchProduct($keyword);
-        $companies = Company::getAllCompanies();
+        $searchData = [
+            'keyword' => $request -> input('keyword'),
+            'company_id' => $request -> input('company_id')
+        ];
+            $products = Product::searchProduct($searchData);
+            $CompanyName = Company::searchCompany($searchData);
         // Ajaxの場合はJSONで返す
         if ($request->ajax()) {
-            return response()->json(['products' => $products]);
+            return response()->json(['products' => $products, 'CompanyName' => $CompanyName]);
         }
+        $companies = Company::getAllCompanies();
         return view('item_list',compact('products','companies'));
     }
 }
