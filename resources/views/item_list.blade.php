@@ -8,21 +8,13 @@
     <div class="row">
         <form method='POST' action="{{ route('search') }}" class="d-flex align-items-center gap-2">
             @csrf
-            <textarea class="form-control col-6" name="keyword" placeholder="検索キーワード"></textarea>
-            <label for="price" class="col-sm-2 col-form-label">価格</label>
-            <input type="number" name="low_price" value="">〜
-            <input type="number" name="high_price" value="">
-            <label for="price" class="col-sm-2 col-form-label">在庫</label>
-            <input type="number" name="low_stock" value="">〜
-            <input type="number" name="low_stock" value="">
-            
-            <select class="form-select col-4" name="company_id" aria-label="企業選択">
-                <option value="" selected>選択してください</option>
-                @foreach($companies as $company)
-                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                @endforeach
-            </select>
-            <input class="btn btn-primary" type="submit" value="検索" />
+            <label for="price" class="col-sm-1 col-form-label">価格</label>
+            <input type="number" name="minPrice" value="">〜
+            <input type="number" name="maxPrice" value="">
+            <label for="price" class="col-sm-1 col-form-label">在庫</label>
+            <input type="number" name="minStock" value="">〜
+            <input type="number" name="maxStock" value="">
+            <input class="btn btn-primary search" type="submit" value="検索" />
         </form>
     </div>
 
@@ -30,11 +22,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
+                    <th scope="col">@sortablelink('id', 'ID')</th>
                     <th scope="col">商品画像</th>
-                    <th scope="col">商品名</th>
-                    <th scope="col">価格</th>
-                    <th scope="col">在庫数</th>
+                    <th scope="col">@sortablelink('product_name','商品名')</th>
+                    <th scope="col">@sortablelink('price','価格')</th>
+                    <th scope="col">@sortablelink('stock','在庫数')</th>
                     <th scope="col">メーカー名</th>
                     <th scope="col">
                         <a href="{{ route('regist') }}" class="btn btn-warning btn-sm">新規登録</a>
@@ -43,7 +35,7 @@
             </thead>
             <tbody>
                 @foreach ($products as $product)
-                    <tr>
+                    <tr id="product-{{$product->id}}">
                         <td class="align-middle">{{ $product->id }}</td>
                         <td class="align-middle">
                             <img class="img" src="{{ asset('storage/' . $product->img_path) }}" alt="画像">
@@ -58,10 +50,11 @@
                                 <input type='hidden' name='id' value="{{ $product->id }}">
                                 <button type="submit" class="btn btn-info">詳細</button>
                             </form>
-                            <form method='POST' action="{{ route('delete') }}">
+                            <form method='POST' action={{ route(
+                                'delete', ['id' => $product->id]) }}>
                                 @csrf
-                                <input type='hidden' name='id' value="{{ $product->id }}">
-                                <button type="submit" class="btn btn-danger" onclick='return confirm("削除します。よろしいですか？")'>削除</button>
+                                <input type='hidden' name='deleteData' value="{{ $product->id }}" data-product_id="{{$product->id}}" class="deleteData">
+                                <button type="submit" data-product_id="{{$product->id}}" class="btn btn-danger" >削除</button>
                             </form>
                         </td>
                     </tr>

@@ -39,10 +39,23 @@ class Company extends Model
     }
 
     // 検索処理 
-    public static function searchCompany($searchData) {
-        if (isset($searchData['company_id'])) {
-            return self::where('id', $searchData['company_id'])->first();
+    // public static function searchCompany($products) {
+    //     if (isset($products['company_id'])) {
+    //         return self::where('id', $products['company_id'])->first();
+    //     }
+    //     return null;
+    // }
+    // 検索処理 
+    public static function searchCompany($products) {
+        // コレクションが空でない場合
+        if ($products->isNotEmpty()) {
+            // 各商品からcompany_idを取得して対応する会社情報を検索
+            $companyId = $products->pluck('company_id')->unique();  // 重複しないcompany_idを取得
+            
+            // 各company_idに対応する会社情報を取得
+            return Company::whereIn('id', $companyId)->get();
         }
+
         return null;
     }
 }
