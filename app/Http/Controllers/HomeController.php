@@ -63,12 +63,11 @@ class HomeController extends Controller
         ];
         try {
             $product_id = Product::createProduct($data);
-            Sales::createSales($product_id -> id);
             return redirect() -> route('regist');
         } catch (QueryException $e) {
             return redirect() -> route('regist') -> with(['error' => 'データベースエラー'], 500);
         } catch (\Exception $e) {
-            return redirect() -> route('regist') -> with(['error' => 'データベースエラー'], 500);
+            return redirect() -> route('regist') -> with(['error' => '処理に失敗しました'], 500);
         }
     }
 
@@ -116,13 +115,9 @@ class HomeController extends Controller
 
     //削除処理
     public function delete_item(Request $request) {
-        // dd($request->id);
         $id = $request -> deleteData; 
-        // $id = Product::findOrFail($request->$deleteData);
-        // $id->delete();
         try {
             $deletedID = Product::deleteProduct($id);
-            // dd($deletedID);
             if($deletedID){
                 // success' => trueはajax側での判定用
                 return response()->json(['success' => true, 'id' => $id]);
@@ -136,41 +131,20 @@ class HomeController extends Controller
     //検索処理
     public function search(Request $request) {
         $searchData = [
-            // 'keyword' => $request -> input('keyword'),
-            // 'company_id' => $request -> input('company_id')
             'minPrice' => $request -> input('minPrice'),
             'maxPrice' => $request -> input('maxPrice'),
             'minStock' => $request -> input('minStock'),
             'maxStock' => $request -> input('maxStock')
         ];
-
             $products = Product::searchProduct($searchData);
             $companies = Company::searchCompany($products);
-            // dd($companies);
-            // $CompanyName = Company::searchCompany($searchData);
         // Ajaxの場合はJSONで返す
-        // if ($request->ajax()) {
-        //     // return response()->json(['minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minStock' => $minStock, 'maxStock' => $maxStock]);
-        //     return response()->json([
-        //         'minPrice' => $searchData['minPrice'] ?? null,
-        //         'maxPrice' => $searchData['maxPrice'] ?? null,
-        //         'minStock' => $searchData['minStock'] ?? null,
-        //         'maxStock' => $searchData['maxStock'] ?? null
-        //     ]);
-        // }
         if ($request->ajax()) {
             return response()->json([
                 'products' => $products,
                 'companies' => $companies,
             ]);
         }
-    //     return response()->json([
-    // 'minPrice' => $searchData['minPrice'] ?? null,
-    // 'maxPrice' => $searchData['maxPrice'] ?? null,
-    // 'minStock' => $searchData['minStock'] ?? null,
-    // 'maxStock' => $searchData['maxStock'] ?? null
-// ]);
-        // $companies = Company::getAllCompanies();
         return view('item_list',compact('products'));
     }
 }

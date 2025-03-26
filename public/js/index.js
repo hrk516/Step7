@@ -18,17 +18,9 @@ $(document).ready(function () {
         console.log("削除対象のID:", deleteData);
         productDelete(deleteData);
     });
-    // $(".btn-danger").click(function (event) {
-    //     event.preventDefault();
-    //     let deleteData = $(this).data("product_id");
-    //     // console.log(deleteData);
-    //     productDelete(deleteData);
-    // });
 });
 
 function getSearch() {
-    // let keyword = $('textarea[name="keyword"]').val();
-    // let company_id = $('select[name="company_id"]').val();
     let minPrice = $('input[name="minPrice"]').val();
     let maxPrice = $('input[name="maxPrice"]').val();
     let minStock = $('input[name="minStock"]').val();
@@ -42,7 +34,6 @@ function getSearch() {
             "X-CSRF-TOKEN": csrfToken,
         },
     })
-
         // 成功
         .done(function (response) {
             console.log("成功", response);
@@ -69,7 +60,6 @@ function getSearch() {
                         <td class="align-middle">¥${product.price}</td>
                         <td class="align-middle">${product.stock}</td>
                         <td class="align-middle">${company_name}</td>
-
                         <td class="align-middle d-flex align-items-center gap-2 form-btn">
                         <form method='POST' action="/step7/public/detail/${product.id}">
                         <input type='hidden' name='_token' value="${csrfToken}">
@@ -90,40 +80,37 @@ function getSearch() {
         // 完了
         .always(function (response) {
             console.log("完了");
+            console.log(response);
         });
 }
 
 function productDelete(deleteData) {
-    // この書き方だと1行目のidしか取ってこれない
-    // let deleteData = $('input[name="deleteData"]').val();
-    // data-product_id="{{$product->id}}"を使う$(this)=クリックしたid
-    // let deleteData = $(this).data("product_id");
-    // console.log(deleteData);
-    // let deleteData = $(this).data("product_id");
-    // clickEle = $(this);
-    // let deleteData = clickEle.attr("data-product_id");
-    // let deleteData = $(this).$('input[name="deleteData"]').val();
     console.log(deleteData);
     let deleteConfirm = confirm("削除してよろしいでしょうか？");
-    if (deleteConfirm == true) {
-        $.ajax({
-            url: "/step7/public/delete/" + deleteData,
-            type: "POST",
-            data: { deleteData },
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-            },
-        }).done(function (response) {
-            console.log(response);
-            if (response.id) {
-                $(`#product-${response.id}`).fadeOut();
-            } else {
-                console.log(response.message);
-            }
-        });
-    } else {
-        (function (e) {
-            e.preventDefault();
-        });
+    if (!deleteConfirm) {
+        console.log("削除をキャンセルしました。");
+        return;
     }
+    $.ajax({
+        url: `/step7/public/delete/${deleteData}`,
+        type: "POST",
+        data: { deleteData },
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+        },
+    })
+    // 成功
+    .done(function (response) {
+        console.log(response);
+        if (response.id) {
+            $(`#product-${response.id}`).fadeOut();
+        } else {
+            console.log(response.message);
+        }
+    })
+    // 失敗
+    .fail(function (response) {
+        console.log("失敗");
+        console.log(response);
+    });
 }

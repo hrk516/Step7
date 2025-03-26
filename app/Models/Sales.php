@@ -17,14 +17,10 @@ class Sales extends Model
         'product_id',
     ];
 
-    public function product() {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
-
-    public static function createSales($id) {
+    public static function insertSales($product_id) {
         // product_idとして$idを渡して新しいSalesを作成
         return self::create([
-            'product_id' => $id,
+            'product_id' => $product_id,
         ]);
     }
 }

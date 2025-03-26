@@ -26,7 +26,7 @@ class Product extends Model
     ];
 
     // ソート可能なカラムを指定
-    public $sortable = ['company_id', 'product_name', 'price', 'stock'];
+    public $sortable = ['id', 'product_name', 'price', 'stock'];
 
     // companyと紐付ける為に書く
     public function company() {
@@ -35,7 +35,7 @@ class Product extends Model
 
     // productを取得（static=Cでnew（インスタンス化）しなくて済む）
     public static function getAllProducts() {
-        return self::sortable()->paginate(5);
+        return self::sortable('id')->paginate(5);
     }
 
     // 新規登録処理
