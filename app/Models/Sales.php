@@ -17,6 +17,11 @@ class Sales extends Model
         'product_id',
     ];
 
+    // 減少処理後のsave
+    public static function decrease($product) {
+        $product->save();
+    }
+
     public static function insertSales($product_id) {
         // product_idとして$idを渡して新しいSalesを作成
         return self::create([

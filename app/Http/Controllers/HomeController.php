@@ -50,16 +50,16 @@ class HomeController extends Controller
         // 画像なしの初期値
         $img_path = null; 
         if ($request -> hasFile('img_path')) {
-        // 画像を保存して、パスを取得
-        $img_path = $request -> file('img_path') -> store('images', 'public');
+            // 画像を保存して、パスを取得
+            $img_path = $request -> file('img_path') -> store('images', 'public');
         }
         $data = [
-        'company_id' => $company_id,
-        'product_name' => $item_list['product_name'], 
-        'price' => $item_list['price'],
-        'stock' => $item_list['stock'],
-        'comment' => $item_list['comment'],
-        'img_path' => $img_path
+            'company_id' => $company_id,
+            'product_name' => $item_list['product_name'], 
+            'price' => $item_list['price'],
+            'stock' => $item_list['stock'],
+            'comment' => $item_list['comment'],
+            'img_path' => $img_path
         ];
         try {
             $product_id = Product::createProduct($data);
@@ -96,12 +96,12 @@ class HomeController extends Controller
             $img_path = $request -> file('img_path') -> store('images', 'public');
         }
         $update_data = [
-        'company_id' => $update_list['company_id'],
-        'product_name' => $update_list['product_name'], 
-        'price' => $update_list['price'],
-        'stock' => $update_list['stock'],
-        'comment' => $update_list['comment'],
-        'img_path' => $img_path
+            'company_id' => $update_list['company_id'],
+            'product_name' => $update_list['product_name'], 
+            'price' => $update_list['price'],
+            'stock' => $update_list['stock'],
+            'comment' => $update_list['comment'],
+            'img_path' => $img_path
         ];
         try {
             Product::updateProduct($id, $update_data);
@@ -131,13 +131,16 @@ class HomeController extends Controller
     //検索処理
     public function search(Request $request) {
         $searchData = [
+            'keyword' => $request -> input('keyword'),
+            'company_id' => $request -> input('company_id'),
             'minPrice' => $request -> input('minPrice'),
             'maxPrice' => $request -> input('maxPrice'),
             'minStock' => $request -> input('minStock'),
-            'maxStock' => $request -> input('maxStock')
+            'maxStock' => $request -> input('maxStock'),
         ];
-            $products = Product::searchProduct($searchData);
-            $companies = Company::searchCompany($products);
+        $products = Product::searchProduct($searchData);
+        $companies = Company::searchCompany($products);
+
         // Ajaxの場合はJSONで返す
         if ($request->ajax()) {
             return response()->json([

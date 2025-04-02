@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kyslik\ColumnSortable\Sortable;
 
 class Product extends Model
 {
     use HasFactory;
-    use Sortable;
     /**
      * The attributes that are mass assignable.
      *
@@ -35,7 +33,7 @@ class Product extends Model
 
     // productを取得（static=Cでnew（インスタンス化）しなくて済む）
     public static function getAllProducts() {
-        return self::sortable('id')->paginate(5);
+        return self::orderBy('id', 'ASC')->paginate(5);
     }
 
     // 新規登録処理
@@ -68,19 +66,25 @@ class Product extends Model
         return null;
     }
 
-    // 検索処理 
+    // // 検索処理 
     public static function searchProduct($searchData) {
-        // これからSQL書くよのサイン的な
-        $query = self::query();
-        if (!empty($searchData['minPrice'])&&!empty($searchData['maxPrice'])) {
+        $query = self::query(); // ここは消さない！
+    
+        if (!empty($searchData['keyword'])) {
+            $query->where('product_name', 'like', "%{$searchData['keyword']}%");
+        }
+    
+        if (!empty($searchData['company_id'])) {
+            $query->where('company_id', $searchData['company_id']);
+        }
+    
+        if (!empty($searchData['minPrice']) && !empty($searchData['maxPrice'])) {
             $query->whereBetween('price', [$searchData['minPrice'], $searchData['maxPrice']]);
         }
-        if (!empty($searchData['minStock'])&&!empty($searchData['maxStock'])) {
+    
+        if (!empty($searchData['minStock']) && !empty($searchData['maxStock'])) {
             $query->whereBetween('stock', [$searchData['minStock'], $searchData['maxStock']]);
         }
-        // if (!empty($searchData['company_id'])) {
-        //     $query->where('company_id', $searchData['company_id']);
-        // }
-        return $query->orderBy('id', 'ASC')->paginate(5);
+        return $query->orderBy('id', 'ASC')->paginate(5)->appends(request()->query());;
     }
 }

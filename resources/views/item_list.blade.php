@@ -6,27 +6,34 @@
 
 @section('content')
     <div class="row">
-        <form method='POST' action="{{ route('search') }}" class="d-flex align-items-center gap-2">
+        <form method='GET' action="{{ route('search') }}" class="d-flex align-items-center gap-2">
             @csrf
-            <label for="price" class="col-sm-1 col-form-label">価格</label>
-            <input type="number" name="minPrice" value="">〜
-            <input type="number" name="maxPrice" value="">
-            <label for="price" class="col-sm-1 col-form-label">在庫</label>
-            <input type="number" name="minStock" value="">〜
-            <input type="number" name="maxStock" value="">
+            <textarea class="form-control col-3" name="keyword" placeholder="検索キーワード"></textarea>
+            <select class="form-select col-2" name="company_id" aria-label="企業選択">
+                <option value="" selected>選択してください</option>
+                @foreach($companies as $company)
+                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                @endforeach
+            </select>
+            <label for="price" class="col-sm-auto: auto col-form-label">価格</label>
+            <input type="number" class="col-sm-1" name="minPrice" value="">〜
+            <input type="number" class="col-sm-1" name="maxPrice" value="">
+            <label for="price" class="col-sm-auto: auto col-form-label">在庫</label>
+            <input type="number" class="col-sm-1" name="minStock" value="">〜
+            <input type="number" class="col-sm-1" name="maxStock" value="">
             <input class="btn btn-primary search" type="submit" value="検索" />
         </form>
     </div>
 
     <div class="main">
-        <table class="table table-striped">
+        <table class="table table-striped" id="fav-table">
             <thead>
                 <tr>
-                    <th scope="col">@sortablelink('id', 'ID')</th>
+                    <th scope="col" class="sorter-digit">ID</th>
                     <th scope="col">商品画像</th>
-                    <th scope="col">@sortablelink('product_name','商品名')</th>
-                    <th scope="col">@sortablelink('price','価格')</th>
-                    <th scope="col">@sortablelink('stock','在庫数')</th>
+                    <th scope="col">商品名</th>
+                    <th scope="col">価格</th>
+                    <th scope="col">在庫数</th>
                     <th scope="col">メーカー名</th>
                     <th scope="col">
                         <a href="{{ route('regist') }}" class="btn btn-warning btn-sm">新規登録</a>
@@ -62,7 +69,7 @@
             </tbody>
         </table>
         <div class="link">
-            {{ $products->links('pagination::bootstrap-4') }}
+            {{ $products->appends(request()->query())->links('pagination::bootstrap-4') }}
         </div>
     </div>
 @endsection

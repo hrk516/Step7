@@ -25,7 +25,7 @@ class SalesController extends Controller
         }
         // 在庫を減少させる
         $product->stock -= $quantity;
-        $product->save();
+        Sales::decrease($product);
         // Salesテーブルに商品IDと購入日時を記録する
         Sales::insertSales($product_id);
         // 自販機にレスポンスを返す
